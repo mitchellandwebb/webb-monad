@@ -4,7 +4,7 @@ module Webb.Monad.Prelude
 , andM, orM, notM, (&&=), (||=), timesRepeat, timesRepeat_
 , forceEither, forceMaybe, forceMaybe', onCancel, throwString
 , launch, launch_, kill, _kill, delayInt
-, expectSatisfy, expectSatisfyM, expectNotSatisfyM, expectM, spyM
+, expectSatisfy, expectSatisfyM, expectNotSatisfyM, expectM, spyM, expect
 )
 where
 
@@ -112,6 +112,12 @@ expectM :: forall m.
   MonadEffect m => 
   m Boolean -> String -> m Unit
 expectM match msg = unlessM match do 
+  liftEffect do throwString msg
+
+expect :: forall m.
+  MonadEffect m => 
+  Boolean -> String -> m Unit
+expect match msg = unless match do 
   liftEffect do throwString msg
   
 -- Trace a monadic item in any monadic effect by binding it before printing it.
